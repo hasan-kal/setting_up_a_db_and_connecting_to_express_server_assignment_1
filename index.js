@@ -1,15 +1,32 @@
+// index.js
 const express = require('express');
-const { resolve } = require('path');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+// Load environment variables from .env file
+dotenv.config();
 
 const app = express();
-const port = 3010;
+const PORT = process.env.PORT || 5000;
 
-app.use(express.static('static'));
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to database');
+  })
+  .catch((err) => {
+    console.error('Error connecting to database: ', err);
+  });
 
+// Middleware
+app.use(express.json());
+
+// Sample route
 app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+  res.send('Customer Management System API');
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
